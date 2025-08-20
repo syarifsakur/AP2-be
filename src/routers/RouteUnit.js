@@ -14,8 +14,8 @@ const router = express.Router();
 
 router.get("/", getAllUnits);
 router.get("/:id", getUnitsById);
-router.post("/create/", validateData(schemaUnit), createUnits);
-router.patch("/update/:id",validateData(schemaUnit), updateUnit);
-router.delete("/delete/:id", deleteUnit);
+router.post("/create/", verifyToken, validateData(schemaUnit), createUnits);
+router.patch("/update/:id", verifyToken, validateData(schemaUnit), updateUnit);
+router.delete("/delete/:id", verifyToken, deleteUnit);
 
 export default router;
