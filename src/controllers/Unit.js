@@ -11,7 +11,7 @@ import { Op } from "sequelize";
 // Admin & user
 export const getAllUnits = async (req, res) => {
   try {
-    const response = await Unit.findAll({
+    const { rows: response, count: total} = await Unit.findAndCountAll({
       include: [
         {
           model: Frame,
@@ -97,7 +97,7 @@ export const getAllUnits = async (req, res) => {
       ],
     }));
 
-    res.status(200).json({ response: formattedResponse });
+    res.status(200).json({ response: formattedResponse ,total});
   } catch (error) {
     console.error(error);
     return res.status(500).json(error);

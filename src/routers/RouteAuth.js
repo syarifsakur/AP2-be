@@ -5,7 +5,7 @@ import {
   refreshTokenAuth,
   register,
 } from "../controllers/Auth.js";
-import verifyToken from "../middlewares/verifyToken.js";
+import verifyToken from "../middlewares/VerifyToken.js";
 
 const router = express.Router();
 

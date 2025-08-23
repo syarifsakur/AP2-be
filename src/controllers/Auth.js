@@ -37,17 +37,23 @@ export const Login = async (req, res) => {
     const token = jwt.sign(
       { userId: user.uuid },
       process.env.ACCESS_SECRET_TOKEN,
-      { expiresIn: "24h" }
+      { expiresIn: "10m" }
     );
 
-    await Admin.update({ token }, { where: { uuid: user.uuid } });
+    const refreshToken = jwt.sign(
+      { userId: user.uuid },
+      process.env.REFRESH_SECRET_TOKEN,
+      { expiresIn: "1d" }
+    );
+
+    await Admin.update({ token: refreshToken }, { where: { uuid: user.uuid } });
 
     const dataForClient = {
       userId: user.uuid,
       username: user.username,
     };
 
-    res.cookie("token", token, {
+    res.cookie("token", refreshToken, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
       secure: false,
@@ -67,51 +73,33 @@ export const refreshTokenAuth = async (req, res) => {
     const refreshToken = req.cookies.token;
     if (!refreshToken) return res.sendStatus(401);
 
-    const user = await Users.findOne({
-      where: {
-        token: refreshToken,
-      },
-      include: {
-        model: Roles,
-        as: "roles",
-        foreignKey: "role_id",
-      },
+    const user = await Admin.findOne({
+      where: { token: refreshToken },
     });
 
     if (!user) return res.sendStatus(401);
 
-    jwt.verify(
-      refreshToken,
-      process.env.REFRESH_SECRET_TOKEN,
-      (err, decoded) => {
-        if (err) return res.sendStatus(403);
+    jwt.verify(refreshToken, process.env.REFRESH_SECRET_TOKEN, (err, decoded) => {
+      if (err) return res.sendStatus(403);
 
-        const userId = decoded.userId;
+      const userId = decoded.userId;
 
-        const accessToken = jwt.sign(
-          { userId },
-          process.env.ACCESS_SECRET_TOKEN,
-          {
-            expiresIn: "10m",
-          }
-        );
+      const token = jwt.sign(
+        { userId },
+        process.env.ACCESS_SECRET_TOKEN,
+        { expiresIn: "10m" }
+      );
 
-        const dataForClient = {
-          userId: user.uuid,
-          email: user.email,
-          username: user.username,
-          fullname: user.fullname,
-          role: user.roles?.role_key,
-        };
+      const dataForClient = {
+        userId: user.uuid,
+        username: user.username,
+      };
 
-        return res.status(200).json({ dataForClient, token: accessToken });
-      }
-    );
+      return res.status(200).json({ dataForClient, token: token });
+    });
   } catch (error) {
     console.error("Error in refreshTokenAuth:", error);
-    return res
-      .status(500)
-      .json({ message: "Server error", detail: error.message });
+    return res.status(500).json({ message: "Server error", detail: error.message });
   }
 };
 
@@ -124,7 +112,7 @@ export const logout = async (req, res) => {
     res.clearCookie("token");
     return res.status(200).json({ message: "Anda berhasil logout!" });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res.status(500).json({ message: error.message });
   }
 };

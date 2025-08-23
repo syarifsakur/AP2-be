@@ -4,14 +4,10 @@ import rateLimit from "express-rate-limit";
 import db from "./config/database.js";
 import cors from "cors";
 import fileUpload from "express-fileupload";
+import cookieParser from 'cookie-parser';
 
-import ROuteAuth from "./routers/RouteAuth.js"
+import RouteAuth from "./routers/RouteAuth.js"
 import RouteUnit from "./routers/RouteUnit.js";
-import RouteFrame from "./routers/RouteFrame.js";
-import RouteMachine from "./routers/RouteMachine.js";
-import RouteDimensions from "./routers/RouteDimensions.js";
-import RouteCapacity from "./routers/RouteCapacity.js";
-import RouteElectricity from "./routers/RouteElectricity.js";
 import RouteCredit from "./routers/RouteCredit.js";
 
 import createModel from "./models/ModelFrame.js";
@@ -47,14 +43,10 @@ app.use(
 app.use("/public", express.static("public"));
 app.use(fileUpload());
 app.use(express.json());
+app.use(cookieParser())
 
-app.use("/auth",ROuteAuth)
+app.use("/auth",RouteAuth)
 app.use("/unit", RouteUnit);
-app.use("/frame", RouteFrame);
-app.use("/machine", RouteMachine);
-app.use("/dimensions", RouteDimensions);
-app.use("/capacity", RouteCapacity);
-app.use("/electricity", RouteElectricity);
 app.use("/credit", RouteCredit);
 
 app.listen(3000, () => {

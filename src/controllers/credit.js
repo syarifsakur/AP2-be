@@ -17,15 +17,19 @@ export const getCredit = async (req, res) => {
         "down_payment",
         "tenor_amount",
         "message",
+        "createdAt",
       ],
-      include:[{
-        model:Unit,
-        as:"unit",
-        attributes:['type_name']
-      }]
+      include: [
+        {
+          model: Unit,
+          as: "unit",
+          attributes: ["type_name"],
+        },
+      ],
+      order: [["createdAt", "DESC"]],
     });
 
-    return res.status(200).json({response,total})
+    return res.status(200).json({ response, total });
   } catch (error) {
     return res.status(500).json(error);
   }
@@ -72,6 +76,22 @@ export const createCredit = async (req, res) => {
     return res.status(201).json({ message: "Credit created successfully" });
   } catch (error) {
     console.log(error);
+    return res.status(500).json(error);
+  }
+};
+
+export const deleteCredit = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const credit = await Credit.findByPk(id);
+
+    if (!credit)
+      return res.status(404).json({ message: "Credit tidak di temukan!" });
+
+    credit.destroy();
+
+    return res.status(200).json({ message: "Berhasil Menghapus Credit!" });
+  } catch (error) {
     return res.status(500).json(error);
   }
 };
