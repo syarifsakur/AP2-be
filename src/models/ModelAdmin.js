@@ -1,8 +1,8 @@
-import { DataTypes } from "sequelize";
-import db from "../config/database.js";
+import { DataTypes } from 'sequelize';
+import db from '../config/database.js';
 
 const Admin = db.define(
-  "admin",
+  'admin',
   {
     uuid: {
       type: DataTypes.STRING,
@@ -21,9 +21,9 @@ const Admin = db.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    token:{
-        type:DataTypes.STRING
-    }
+    token: {
+      type: DataTypes.STRING,
+    },
   },
   {
     freezeTableName: true,

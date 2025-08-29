@@ -1,9 +1,9 @@
-import { DataTypes } from "sequelize";
-import db from "../config/database.js";
-import Unit from "./ModelUnit.js";
+import { DataTypes } from 'sequelize';
+import db from '../config/database.js';
+import Unit from './ModelUnit.js';
 
 const Frame = db.define(
-  "frame",
+  'frame',
   {
     uuid: {
       type: DataTypes.STRING,
@@ -49,13 +49,13 @@ const Frame = db.define(
 );
 
 Frame.belongsTo(Unit, {
-  foreignKey: "unit_id",
-  as: "unit",
-  onDelete: "cascade",
+  foreignKey: 'unit_id',
+  as: 'unit',
+  onDelete: 'cascade',
 });
 Unit.hasOne(Frame, {
-  foreignKey: "unit_id",
-  as: "frame",
+  foreignKey: 'unit_id',
+  as: 'frame',
 });
 
 export default Frame;

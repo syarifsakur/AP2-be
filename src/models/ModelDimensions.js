@@ -1,9 +1,9 @@
-import { DataTypes } from "sequelize";
-import db from "../config/database.js";
-import Unit from "./ModelUnit.js";
+import { DataTypes } from 'sequelize';
+import db from '../config/database.js';
+import Unit from './ModelUnit.js';
 
 const Dimensions = db.define(
-  "dimensions",
+  'dimensions',
   {
     uuid: {
       type: DataTypes.STRING,
@@ -37,15 +37,14 @@ const Dimensions = db.define(
   }
 );
 
-
 Dimensions.belongsTo(Unit, {
-  foreignKey: "unit_id",
-  as: "unit",
-  onDelete: "cascade",
+  foreignKey: 'unit_id',
+  as: 'unit',
+  onDelete: 'cascade',
 });
 Unit.hasOne(Dimensions, {
-  foreignKey: "unit_id",
-  as: "Dimensions",
+  foreignKey: 'unit_id',
+  as: 'Dimensions',
 });
 
 export default Dimensions;

@@ -1,9 +1,9 @@
-import { DataTypes } from "sequelize";
-import db from "../config/database.js";
-import Unit from "./ModelUnit.js";
+import { DataTypes } from 'sequelize';
+import db from '../config/database.js';
+import Unit from './ModelUnit.js';
 
 const Machine = db.define(
-  "machine",
+  'machine',
   {
     uuid: {
       type: DataTypes.STRING,
@@ -61,13 +61,13 @@ const Machine = db.define(
 );
 
 Machine.belongsTo(Unit, {
-  foreignKey: "unit_id",
-  as: "unit",
-  onDelete: "cascade",
+  foreignKey: 'unit_id',
+  as: 'unit',
+  onDelete: 'cascade',
 });
 Unit.hasOne(Machine, {
-  foreignKey: "unit_id",
-  as: "machine",
+  foreignKey: 'unit_id',
+  as: 'machine',
 });
 
 export default Machine;

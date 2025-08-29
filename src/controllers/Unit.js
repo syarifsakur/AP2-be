@@ -1,103 +1,113 @@
-import Capacity from "../models/ModelCapacity.js";
-import Dimensions from "../models/ModelDimensions.js";
-import Electricity from "../models/ModelElectricity.js";
-import Frame from "../models/ModelFrame.js";
-import Machine from "../models/ModelMachine.js";
-import Unit from "../models/ModelUnit.js";
-import path from "path";
-import fs from "fs";
-import { Op } from "sequelize";
+import Capacity from '../models/ModelCapacity.js';
+import Dimensions from '../models/ModelDimensions.js';
+import Electricity from '../models/ModelElectricity.js';
+import Frame from '../models/ModelFrame.js';
+import Machine from '../models/ModelMachine.js';
+import Unit from '../models/ModelUnit.js';
+import path from 'path';
+import fs from 'fs';
+import { Op } from 'sequelize';
 
 // Admin & user
 export const getAllUnits = async (req, res) => {
   try {
-    const { rows: response, count: total} = await Unit.findAndCountAll({
+    const { rows: response, count: total } = await Unit.findAndCountAll({
       include: [
         {
           model: Frame,
-          as: "frame",
+          as: 'frame',
           attributes: [
-            "uuid",
-            "frame_type",
-            "front_suspension_type",
-            "rear_suspension_type",
-            "front_tire_size",
-            "rear_tire_size",
-            "front_brake",
-            "rear_brake",
-            "braking_system",
+            'uuid',
+            'frame_type',
+            'front_suspension_type',
+            'rear_suspension_type',
+            'front_tire_size',
+            'rear_tire_size',
+            'front_brake',
+            'rear_brake',
+            'braking_system',
           ],
         },
         {
           model: Machine,
-          as: "machine",
+          as: 'machine',
           attributes: [
-            "uuid",
-            "machine_type",
-            "machine_capacity",
-            "fuel_supply_system",
-            "diameter",
-            "tranmisi_type",
-            "compression_ratio",
-            "max_power",
-            "max_torque",
-            "starter_type",
-            "kopling_type",
-            "air_cooled_engine",
-            "gear_shift_pattern",
+            'uuid',
+            'machine_type',
+            'machine_capacity',
+            'fuel_supply_system',
+            'diameter',
+            'tranmisi_type',
+            'compression_ratio',
+            'max_power',
+            'max_torque',
+            'starter_type',
+            'kopling_type',
+            'air_cooled_engine',
+            'gear_shift_pattern',
           ],
         },
         {
           model: Dimensions,
-          as: "Dimensions",
+          as: 'Dimensions',
           attributes: [
-            "uuid",
-            "lwh",
-            "wheel_axis_distance",
-            "lowest_distance",
-            "curb_weight",
+            'uuid',
+            'lwh',
+            'wheel_axis_distance',
+            'lowest_distance',
+            'curb_weight',
           ],
         },
         {
           model: Capacity,
-          as: "Capacity",
-          attributes: ["fuel_tank_capacity", "lubricating_oil_capacity"],
+          as: 'Capacity',
+          attributes: ['fuel_tank_capacity', 'lubricating_oil_capacity'],
         },
         {
           model: Electricity,
-          as: "Electricity",
-          attributes: ["battery_type", "ignition_system", "plug_type"],
+          as: 'Electricity',
+          attributes: ['battery_type', 'ignition_system', 'plug_type'],
         },
       ],
-      attributes: ["uuid", "type_name", "img", "path_img", "price", "category"],
+      attributes: [
+        'uuid',
+        'type_name',
+        'img',
+        'path_img',
+        'price',
+        'category',
+        'stok',
+        'ket',
+      ],
+      order: [['createdAt', 'DESC']],
     });
 
     const formattedResponse = response.map((unit) => ({
       ...unit.get(),
       specs: [
-        { label: "Tipe Mesin", value: unit.machine?.machine_type || "N/A" },
+        { label: 'Tipe Mesin', value: unit.machine?.machine_type || 'N/A' },
         {
-          label: "Kapasitas Mesin",
-          value: unit.machine?.machine_capacity || "N/A",
+          label: 'Kapasitas Mesin',
+          value: unit.machine?.machine_capacity || 'N/A',
         },
-        { label: "Daya Maksimum", value: unit.machine?.max_power || "N/A" },
-        { label: "Berat", value: unit.Dimensions?.curb_weight || "N/A" },
-        {
-          label: "Kapasitas Tangki",
-          value: unit.Capacity?.fuel_tank_capacity || "N/A",
-        },
-        {
-          label: "Tipe Baterai",
-          value: unit.Electricity?.battery_type || "N/A",
-        },
-        {
-          label: "Sistem Pengapian",
-          value: unit.Electricity?.ignition_system || "N/A",
-        },
+        // { label: 'Daya Maksimum', value: unit.machine?.max_power || 'N/A' },
+        // { label: 'Berat', value: unit.Dimensions?.curb_weight || 'N/A' },
+        // {
+        //   label: 'Kapasitas Tangki',
+        //   value: unit.Capacity?.fuel_tank_capacity || 'N/A',
+        // },
+        // {
+        //   label: "Tipe Baterai",
+        //   value: unit.Electricity?.battery_type || "N/A",
+        // },
+        // {
+        //   label: "Sistem Pengapian",
+        //   value: unit.Electricity?.ignition_system || "N/A",
+        // },
       ],
     }));
 
-    res.status(200).json({ response: formattedResponse ,total});
+    res.status(200).json({ response: formattedResponse, total });
   } catch (error) {
     console.error(error);
     return res.status(500).json(error);
@@ -113,88 +123,97 @@ export const getUnitsById = async (req, res) => {
       include: [
         {
           model: Frame,
-          as: "frame",
+          as: 'frame',
           attributes: [
-            "uuid",
-            "frame_type",
-            "front_suspension_type",
-            "rear_suspension_type",
-            "front_tire_size",
-            "rear_tire_size",
-            "front_brake",
-            "rear_brake",
-            "braking_system",
+            'uuid',
+            'frame_type',
+            'front_suspension_type',
+            'rear_suspension_type',
+            'front_tire_size',
+            'rear_tire_size',
+            'front_brake',
+            'rear_brake',
+            'braking_system',
           ],
         },
         {
           model: Machine,
-          as: "machine",
+          as: 'machine',
           attributes: [
-            "uuid",
-            "machine_type",
-            "machine_capacity",
-            "fuel_supply_system",
-            "diameter",
-            "tranmisi_type",
-            "compression_ratio",
-            "max_power",
-            "max_torque",
-            "starter_type",
-            "kopling_type",
-            "air_cooled_engine",
-            "gear_shift_pattern",
+            'uuid',
+            'machine_type',
+            'machine_capacity',
+            'fuel_supply_system',
+            'diameter',
+            'tranmisi_type',
+            'compression_ratio',
+            'max_power',
+            'max_torque',
+            'starter_type',
+            'kopling_type',
+            'air_cooled_engine',
+            'gear_shift_pattern',
           ],
         },
         {
           model: Dimensions,
-          as: "Dimensions",
+          as: 'Dimensions',
           attributes: [
-            "uuid",
-            "lwh",
-            "wheel_axis_distance",
-            "lowest_distance",
-            "curb_weight",
+            'uuid',
+            'lwh',
+            'wheel_axis_distance',
+            'lowest_distance',
+            'curb_weight',
           ],
         },
         {
           model: Capacity,
-          as: "Capacity",
-          attributes: ["fuel_tank_capacity", "lubricating_oil_capacity"],
+          as: 'Capacity',
+          attributes: ['fuel_tank_capacity', 'lubricating_oil_capacity'],
         },
         {
           model: Electricity,
-          as: "Electricity",
-          attributes: ["battery_type", "ignition_system", "plug_type"],
+          as: 'Electricity',
+          attributes: ['battery_type', 'ignition_system', 'plug_type'],
         },
       ],
-      attributes: ["uuid", "type_name", "img", "path_img", "price", "category"],
+      attributes: [
+        'uuid',
+        'type_name',
+        'img',
+        'path_img',
+        'price',
+        'category',
+        'stok',
+        'ket',
+      ],
     });
 
     if (!response) {
-      return res.status(404).json({ message: "Unit tidak ditemukan" });
+      return res.status(404).json({ message: 'Unit tidak ditemukan' });
     }
 
     const formattedResponse = {
       ...response.get(),
       specs: [
-        { label: "Tipe Mesin", value: response.machine?.machine_type || "N/A" },
+        { label: 'Tipe Mesin', value: response.machine?.machine_type || 'N/A' },
         {
-          label: "Kapasitas Mesin",
-          value: response.machine?.machine_capacity || "N/A",
+          label: 'Kapasitas Mesin',
+          value: response.machine?.machine_capacity || 'N/A',
         },
-        { label: "Daya Maksimum", value: response.machine?.max_power || "N/A" },
-        { label: "Berat", value: response.Dimensions?.curb_weight || "N/A" },
+        { label: 'Daya Maksimum', value: response.machine?.max_power || 'N/A' },
+        { label: 'Berat', value: response.Dimensions?.curb_weight || 'N/A' },
         {
-          label: "Kapasitas Tangki",
-          value: response.Capacity?.fuel_tank_capacity || "N/A",
-        },
-        {
-          label: "Tipe Baterai",
-          value: response.Electricity?.battery_type || "N/A",
+          label: 'Kapasitas Tangki',
+          value: response.Capacity?.fuel_tank_capacity || 'N/A',
         },
         {
-          label: "Sistem Pengapian",
-          value: response.Electricity?.ignition_system || "N/A",
+          label: 'Tipe Baterai',
+          value: response.Electricity?.battery_type || 'N/A',
+        },
+        {
+          label: 'Sistem Pengapian',
+          value: response.Electricity?.ignition_system || 'N/A',
         },
       ],
     };
@@ -241,88 +260,161 @@ export const createUnits = async (req, res) => {
     curb_weight,
     fuel_tank_capacity,
     lubricating_oil_capacity,
+    stok,
+    ket,
   } = req.body;
 
-  if (!req.files) return res.status(422).json({ img: "Img harus di isi!" });
+  if (!req.files) return res.status(422).json({ img: 'Img harus di isi!' });
 
   const file = req.files.file;
   const fileSize = file.data.length;
   const ext = path.extname(file.name);
-  const allowedTypes = [".png", ".jpg", ".jpeg"];
+  const allowedTypes = ['.png', '.jpg', '.jpeg'];
   const filename = Date.now() + ext;
 
   if (!allowedTypes.includes(ext.toLowerCase()))
-    return res.status(422).json({ img: "Format img tidak di dukung!" });
+    return res.status(422).json({ img: 'Format img tidak di dukung!' });
   if (fileSize > 30000000)
-    return res.status(422).json({ img: "Ukuran img terlalu besar!" });
+    return res.status(422).json({ img: 'Ukuran img terlalu besar!' });
 
   const pathImg = `${req.protocol}://${req.get(
-    "host"
+    'host'
   )}/public/unit/${filename}`;
 
   file.mv(`public/unit/${filename}`);
 
-  try {
-    const unit = await Unit.create({
-      type_name: type_name,
-      img: filename,
-      path_img: pathImg,
-      price: price,
-      category,
-    });
+  if (stok > 0) {
+    try {
+      const unit = await Unit.create({
+        type_name: type_name,
+        img: filename,
+        path_img: pathImg,
+        price: price,
+        category,
+        ket: 'ready',
+        stok,
+      });
 
-    await Machine.create({
-      machine_type,
-      machine_capacity,
-      fuel_supply_system,
-      diameter,
-      tranmisi_type,
-      compression_ratio,
-      max_power,
-      max_torque,
-      starter_type,
-      kopling_type,
-      air_cooled_engine,
-      gear_shift_pattern,
-      unit_id: unit.uuid,
-    });
+      await Machine.create({
+        machine_type,
+        machine_capacity,
+        fuel_supply_system,
+        diameter,
+        tranmisi_type,
+        compression_ratio,
+        max_power,
+        max_torque,
+        starter_type,
+        kopling_type,
+        air_cooled_engine,
+        gear_shift_pattern,
+        unit_id: unit.uuid,
+      });
 
-    await Frame.create({
-      frame_type,
-      front_suspension_type,
-      rear_suspension_type,
-      front_tire_size,
-      rear_tire_size,
-      front_brake,
-      rear_brake,
-      braking_system,
-      unit_id: unit.uuid,
-    });
+      await Frame.create({
+        frame_type,
+        front_suspension_type,
+        rear_suspension_type,
+        front_tire_size,
+        rear_tire_size,
+        front_brake,
+        rear_brake,
+        braking_system,
+        unit_id: unit.uuid,
+      });
 
-    await Electricity.create({
-      battery_type,
-      ignition_system,
-      plug_type,
-      unit_id: unit.uuid,
-    });
+      await Electricity.create({
+        battery_type,
+        ignition_system,
+        plug_type,
+        unit_id: unit.uuid,
+      });
 
-    await Dimensions.create({
-      lwh,
-      wheel_axis_distance,
-      lowest_distance,
-      curb_weight,
-      unit_id: unit.uuid,
-    });
+      await Dimensions.create({
+        lwh,
+        wheel_axis_distance,
+        lowest_distance,
+        curb_weight,
+        unit_id: unit.uuid,
+      });
 
-    await Capacity.create({
-      fuel_tank_capacity,
-      lubricating_oil_capacity,
-      unit_id: unit.uuid,
-    });
+      await Capacity.create({
+        fuel_tank_capacity,
+        lubricating_oil_capacity,
+        unit_id: unit.uuid,
+      });
 
-    return res.status(201).json({ message: "Berhasil Menyimpan Data Unit" });
-  } catch (error) {
-    return res.status(500).json(error);
+      return res.status(201).json({ message: 'Berhasil Menyimpan Data Unit' });
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  } else if (stok === 0) {
+    try {
+      const unit = await Unit.create({
+        type_name: type_name,
+        img: filename,
+        path_img: pathImg,
+        price: price,
+        category,
+        ket: 'inden',
+        stok,
+      });
+
+      await Machine.create({
+        machine_type,
+        machine_capacity,
+        fuel_supply_system,
+        diameter,
+        tranmisi_type,
+        compression_ratio,
+        max_power,
+        max_torque,
+        starter_type,
+        kopling_type,
+        air_cooled_engine,
+        gear_shift_pattern,
+        unit_id: unit.uuid,
+      });
+
+      await Frame.create({
+        frame_type,
+        front_suspension_type,
+        rear_suspension_type,
+        front_tire_size,
+        rear_tire_size,
+        front_brake,
+        rear_brake,
+        braking_system,
+        unit_id: unit.uuid,
+      });
+
+      await Electricity.create({
+        battery_type,
+        ignition_system,
+        plug_type,
+        unit_id: unit.uuid,
+      });
+
+      await Dimensions.create({
+        lwh,
+        wheel_axis_distance,
+        lowest_distance,
+        curb_weight,
+        unit_id: unit.uuid,
+      });
+
+      await Capacity.create({
+        fuel_tank_capacity,
+        lubricating_oil_capacity,
+        unit_id: unit.uuid,
+      });
+
+      return res.status(201).json({ message: 'Berhasil Menyimpan Data Unit' });
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  } else {
+    return res.status(400).json({ message: 'harus bilangan bulat stok nya!' });
   }
 };
 
@@ -361,204 +453,106 @@ export const updateUnit = async (req, res) => {
     curb_weight,
     fuel_tank_capacity,
     lubricating_oil_capacity,
+    stok,
   } = req.body;
+
   const { id } = req.params;
 
   const unit = await Unit.findOne({ where: { uuid: id } });
+  if (!unit) return res.status(400).json({ message: 'Unit tidak ditemukan!' });
 
-  if (!unit) {
-    return res.status(400).json({ message: "Unit tidak ditemukan!" });
-  }
+  const ket = stok == 0 ? 'inden' : 'ready';
 
-  if (!req.files) {
-    try {
-      const unit = await Unit.update(
-        {
-          type_name: type_name,
-          price: price,
-          category,
-        },
-        {
-          where: {
-            uuid: id,
-          },
-        }
-      );
+  let updatePayload = {
+    type_name,
+    price,
+    category,
+    stok,
+    ket,
+  };
 
-      await Machine.update(
-        {
-          machine_type,
-          machine_capacity,
-          fuel_supply_system,
-          diameter,
-          tranmisi_type,
-          compression_ratio,
-          max_power,
-          max_torque,
-          starter_type,
-          kopling_type,
-          air_cooled_engine,
-          gear_shift_pattern,
-        },
-        {
-          where: {
-            unit_id: id,
-          },
-        }
-      );
+  try {
+    if (req.files && req.files.file) {
+      const file = req.files.file;
+      const fileSize = file.data.length;
+      const ext = path.extname(file.name);
+      const allowedTypes = ['.png', '.jpg', '.jpeg'];
+      const filename = Date.now() + ext;
 
-      await Frame.update(
-        {
-          frame_type,
-          front_suspension_type,
-          rear_suspension_type,
-          front_tire_size,
-          rear_tire_size,
-          front_brake,
-          rear_brake,
-          braking_system,
-        },
-        { where: { unit_id: id } }
-      );
+      if (!allowedTypes.includes(ext.toLowerCase())) {
+        return res.status(422).json({ img: 'Format img tidak didukung!' });
+      }
+      if (fileSize > 30000000) {
+        return res.status(422).json({ img: 'Ukuran img terlalu besar!' });
+      }
 
-      await Electricity.update(
-        {
-          battery_type,
-          ignition_system,
-          plug_type,
-        },
-        { where: { unit_id: id } }
-      );
+      const pathImg = `${req.protocol}://${req.get(
+        'host'
+      )}/public/unit/${filename}`;
+      file.mv(`public/unit/${filename}`);
 
-      await Dimensions.update(
-        {
-          lwh,
-          wheel_axis_distance,
-          lowest_distance,
-          curb_weight,
-        },
-        { where: { unit_id: id } }
-      );
+      if (unit.img) {
+        const oldPath = `public/unit/${unit.img}`;
+        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+      }
 
-      await Capacity.update(
-        {
-          fuel_tank_capacity,
-          lubricating_oil_capacity,
-        },
-        { where: { unit_id: id } }
-      );
-      return res.status(200).json({
-        message: "Unit berhasil di update",
-      });
-    } catch (error) {
-      return res.status(500).json(error);
+      updatePayload.img = filename;
+      updatePayload.path_img = pathImg;
     }
-  } else {
-    const file = req.files.file;
-    const fileSize = file.data.length;
-    const ext = path.extname(file.name);
-    const allowedTypes = [".png", ".jpg", ".jpeg"];
-    const filename = Date.now() + ext;
 
-    if (!allowedTypes.includes(ext.toLowerCase()))
-      return res.status(422).json({ img: "Format img tidak di dukung!" });
-    if (fileSize > 30000000)
-      return res.status(422).json({ img: "Ukuran img terlalu besar!" });
+    await Unit.update(updatePayload, { where: { uuid: id } });
 
-    const pathImg = `${req.protocol}://${req.get(
-      "host"
-    )}/public/unit/${filename}`;
+    await Machine.update(
+      {
+        machine_type,
+        machine_capacity,
+        fuel_supply_system,
+        diameter,
+        tranmisi_type,
+        compression_ratio,
+        max_power,
+        max_torque,
+        starter_type,
+        kopling_type,
+        air_cooled_engine,
+        gear_shift_pattern,
+      },
+      { where: { unit_id: id } }
+    );
 
-    file.mv(`public/unit/${filename}`);
+    await Frame.update(
+      {
+        frame_type,
+        front_suspension_type,
+        rear_suspension_type,
+        front_tire_size,
+        rear_tire_size,
+        front_brake,
+        rear_brake,
+        braking_system,
+      },
+      { where: { unit_id: id } }
+    );
 
-    if (unit.img) {
-      fs.unlinkSync(`public/unit/${unit.img}`);
-    }
-    try {
-      const unit = await Unit.update(
-        {
-          type_name: type_name,
-          price: price,
-          category,
-          img: filename,
-          path_img: pathImg,
-        },
-        {
-          where: {
-            uuid: id,
-          },
-        }
-      );
+    await Electricity.update(
+      { battery_type, ignition_system, plug_type },
+      { where: { unit_id: id } }
+    );
 
-      await Machine.update(
-        {
-          machine_type,
-          machine_capacity,
-          fuel_supply_system,
-          diameter,
-          tranmisi_type,
-          compression_ratio,
-          max_power,
-          max_torque,
-          starter_type,
-          kopling_type,
-          air_cooled_engine,
-          gear_shift_pattern,
-        },
-        {
-          where: {
-            unit_id: id,
-          },
-        }
-      );
+    await Dimensions.update(
+      { lwh, wheel_axis_distance, lowest_distance, curb_weight },
+      { where: { unit_id: id } }
+    );
 
-      await Frame.update(
-        {
-          frame_type,
-          front_suspension_type,
-          rear_suspension_type,
-          front_tire_size,
-          rear_tire_size,
-          front_brake,
-          rear_brake,
-          braking_system,
-        },
-        { where: { unit_id: id } }
-      );
+    await Capacity.update(
+      { fuel_tank_capacity, lubricating_oil_capacity },
+      { where: { unit_id: id } }
+    );
 
-      await Electricity.update(
-        {
-          battery_type,
-          ignition_system,
-          plug_type,
-        },
-        { where: { unit_id: id } }
-      );
-
-      await Dimensions.update(
-        {
-          lwh,
-          wheel_axis_distance,
-          lowest_distance,
-          curb_weight,
-        },
-        { where: { unit_id: id } }
-      );
-
-      await Capacity.update(
-        {
-          fuel_tank_capacity,
-          lubricating_oil_capacity,
-        },
-        { where: { unit_id: id } }
-      );
-      return res.status(200).json({
-        message: "Unit berhasil di update",
-      });
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json(error);
-    }
+    return res.status(200).json({ message: 'Unit berhasil diupdate' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json(error);
   }
 };
 
@@ -569,7 +563,7 @@ export const deleteUnit = async (req, res) => {
     const unit = await Unit.findOne({ where: { uuid: id } });
 
     if (!unit) {
-      return res.status(404).json({ message: "Unit tidak ditemukan!" });
+      return res.status(404).json({ message: 'Unit tidak ditemukan!' });
     }
 
     if (unit.img) {
@@ -577,7 +571,7 @@ export const deleteUnit = async (req, res) => {
     }
 
     unit.destroy();
-    return res.status(200).json({ message: "Unit berhasil dihapus!" });
+    return res.status(200).json({ message: 'Unit berhasil dihapus!' });
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);

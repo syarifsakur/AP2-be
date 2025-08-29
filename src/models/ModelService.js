@@ -2,17 +2,14 @@ import { DataTypes } from 'sequelize';
 import db from '../config/database.js';
 import Unit from './ModelUnit.js';
 
-const Credit = db.define(
-  'credit',
+const Service = db.define(
+  'service',
   {
     uuid: {
       type: DataTypes.STRING,
-      primaryKey: true,
       defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
       allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
     },
     name: {
       type: DataTypes.STRING,
@@ -27,12 +24,6 @@ const Credit = db.define(
     address: {
       type: DataTypes.STRING,
     },
-    province: {
-      type: DataTypes.STRING,
-    },
-    city: {
-      type: DataTypes.STRING,
-    },
     category: {
       type: DataTypes.ENUM('matic', 'sport', 'cub', 'ev', 'bigbike'),
       allowNull: false,
@@ -44,19 +35,13 @@ const Credit = db.define(
     year: {
       type: DataTypes.STRING,
     },
-    down_payment: {
+    service_type: {
       type: DataTypes.STRING,
     },
-    tenor_amount: {
-      type: DataTypes.ENUM(
-        '12 bulan',
-        '24 bulan',
-        '36 bulan',
-        '48 bulan',
-        '60 bulan'
-      ),
+    service_date: {
+      type: DataTypes.DATE,
     },
-    message: {
+    service_time: {
       type: DataTypes.STRING,
     },
   },
@@ -65,10 +50,10 @@ const Credit = db.define(
   }
 );
 
-Credit.belongsTo(Unit, {
+Service.belongsTo(Unit, {
   foreignKey: 'unit_id',
   as: 'unit',
   onDelete: 'cascade',
 });
 
-export default Credit;
+export default Service;

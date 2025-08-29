@@ -1,8 +1,8 @@
-import { DataTypes } from "sequelize";
-import db from "../config/database.js";
+import { DataTypes } from 'sequelize';
+import db from '../config/database.js';
 
 const Unit = db.define(
-  "unit",
+  'unit',
   {
     uuid: {
       type: DataTypes.STRING,
@@ -25,8 +25,14 @@ const Unit = db.define(
       allowNull: false,
     },
     category: {
-      type: DataTypes.ENUM("matic", "sport", "cub", "ev", "bigbike"),
+      type: DataTypes.ENUM('matic', 'sport', 'cub', 'ev', 'bigbike'),
       allowNull: false,
+    },
+    stok: {
+      type: DataTypes.INTEGER,
+    },
+    ket: {
+      type: DataTypes.ENUM('ready', 'inden', 'sold'),
     },
   },
   {

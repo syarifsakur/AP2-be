@@ -1,9 +1,9 @@
-import { DataTypes } from "sequelize";
-import db from "../config/database.js";
-import Unit from "./ModelUnit.js";
+import { DataTypes } from 'sequelize';
+import db from '../config/database.js';
+import Unit from './ModelUnit.js';
 
 const Kredit = db.define(
-  "kredit",
+  'kredit',
   {
     uuid: {
       type: DataTypes.STRING,
@@ -36,11 +36,9 @@ const Kredit = db.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    year:{
-        type:DataTypes.STRING
-    }
-    
-
+    year: {
+      type: DataTypes.STRING,
+    },
   },
   {
     freezeTableName: true,
@@ -48,13 +46,13 @@ const Kredit = db.define(
 );
 
 Kredit.belongsTo(Unit, {
-  foreignKey: "unit_id",
-  as: "unit",
-  onDelete: "cascade",
+  foreignKey: 'unit_id',
+  as: 'unit',
+  onDelete: 'cascade',
 });
 Unit.hasOne(Kredit, {
-  foreignKey: "unit_id",
-  as: "Kredit",
+  foreignKey: 'unit_id',
+  as: 'Kredit',
 });
 
 export default Kredit;

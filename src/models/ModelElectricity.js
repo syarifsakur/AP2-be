@@ -1,9 +1,9 @@
-import { DataTypes } from "sequelize";
-import db from "../config/database.js";
-import Unit from "./ModelUnit.js";
+import { DataTypes } from 'sequelize';
+import db from '../config/database.js';
+import Unit from './ModelUnit.js';
 
 const Electricity = db.define(
-  "electricity",
+  'electricity',
   {
     uuid: {
       type: DataTypes.STRING,
@@ -36,13 +36,13 @@ const Electricity = db.define(
 );
 
 Electricity.belongsTo(Unit, {
-  foreignKey: "unit_id",
-  as: "unit",
-  onDelete: "cascade",
+  foreignKey: 'unit_id',
+  as: 'unit',
+  onDelete: 'cascade',
 });
 Unit.hasOne(Electricity, {
-  foreignKey: "unit_id",
-  as: "Electricity",
+  foreignKey: 'unit_id',
+  as: 'Electricity',
 });
 
 export default Electricity;

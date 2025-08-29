@@ -1,9 +1,9 @@
-import { DataTypes } from "sequelize";
-import db from "../config/database.js";
-import Unit from "./ModelUnit.js";
+import { DataTypes } from 'sequelize';
+import db from '../config/database.js';
+import Unit from './ModelUnit.js';
 
 const Capacity = db.define(
-  "capacity",
+  'capacity',
   {
     uuid: {
       type: DataTypes.STRING,
@@ -30,15 +30,14 @@ const Capacity = db.define(
   }
 );
 
-
 Capacity.belongsTo(Unit, {
-  foreignKey: "unit_id",
-  as: "unit",
-  onDelete: "cascade",
+  foreignKey: 'unit_id',
+  as: 'unit',
+  onDelete: 'cascade',
 });
 Unit.hasOne(Capacity, {
-  foreignKey: "unit_id",
-  as: "Capacity",
+  foreignKey: 'unit_id',
+  as: 'Capacity',
 });
 
 export default Capacity;
