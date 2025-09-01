@@ -10,6 +10,7 @@ import RouteAuth from './routers/RouteAuth.js';
 import RouteUnit from './routers/RouteUnit.js';
 import RouteCredit from './routers/RouteCredit.js';
 import RouteService from './routers/RouteService.js';
+import RoutePart from './routers/RoutePart.js';
 
 import createModel from './models/ModelService.js';
 
@@ -50,6 +51,7 @@ app.use('/auth', RouteAuth);
 app.use('/unit', RouteUnit);
 app.use('/credit', RouteCredit);
 app.use('/service', RouteService);
+app.use('/part', RoutePart);
 
 app.listen(3000, () => {
   console.log('server jalan di server 3000');

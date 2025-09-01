@@ -56,4 +56,9 @@ Service.belongsTo(Unit, {
   onDelete: 'cascade',
 });
 
+Unit.hasOne(Service, {
+  foreignKey: 'unit_id',
+  as: 'service',
+});
+
 export default Service;
